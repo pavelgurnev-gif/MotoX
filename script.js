@@ -101,7 +101,6 @@ function showPage(page, filter = {}) {
   if (el) { el.classList.add('active'); currentPage = page; }
   window.scrollTo(0,0);
   
-  // Reset home title when navigating to home
   if (page === 'home' && !document.getElementById('home-title').textContent.includes('Search') && !document.getElementById('home-title').textContent.includes('Favorite')) {
     document.getElementById('home-title').innerHTML = '🔥 Featured Listings';
     renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
@@ -113,19 +112,33 @@ function showPage(page, filter = {}) {
 function goBack() { history.back(); }
 window.addEventListener('popstate', () => showPage('home'));
 
+// ✅ ФИКС: Event listeners за всички филтри
 document.addEventListener('DOMContentLoaded', () => {
+  // 1️⃣ Филтри за тип мотори (Cross, Enduro...)
   document.querySelectorAll('.bike-type-filters .subfilter').forEach(b => b.addEventListener('click', e => {
     e.currentTarget.parentElement.querySelectorAll('.subfilter').forEach(x => x.classList.remove('active'));
     e.currentTarget.classList.add('active');
     currentBikeTypeFilter = e.currentTarget.dataset.biketype;
     renderMotorbikeProducts();
   }));
+  
+  // 2️⃣ Филтри за марки мотори (KTM, Yamaha...)
   document.querySelectorAll('.brand-filters .subfilter').forEach(b => b.addEventListener('click', e => {
     e.currentTarget.parentElement.querySelectorAll('.subfilter').forEach(x => x.classList.remove('active'));
     e.currentTarget.classList.add('active');
     currentBrandFilter = e.currentTarget.dataset.brand;
     renderMotorbikeProducts();
   }));
+
+  // 🔧 3️⃣ ФИКС: Филтри за секция Екипировка (Helmets, Boots...)
+  document.querySelectorAll('#equipment-section .subcategory-filters .subfilter').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.currentTarget.parentElement.querySelectorAll('.subfilter').forEach(x => x.classList.remove('active'));
+      e.currentTarget.classList.add('active');
+      const cat = e.currentTarget.dataset.cat;
+      renderEquipmentProducts({ cat: cat === 'All' ? null : cat });
+    });
+  });
 });
 
 function renderMotorbikeProducts() {
@@ -204,7 +217,6 @@ function toggleFav(id) {
   }
 }
 
-// ✅ Show ONLY favorites when clicking favorites button
 function showFavoritesOnly() {
   const f = [...motorbikeProducts, ...equipmentProducts].filter(p => favorites.includes(p.id));
   document.getElementById('home-title').innerHTML = `❤️ Your Favorite Items (${f.length})`;
@@ -214,14 +226,12 @@ function showFavoritesOnly() {
 
 document.getElementById('btn-favorites').addEventListener('click', showFavoritesOnly);
 
-// ✅ FIXED SEARCH - Shows ONLY matching items
 document.getElementById('search-btn').addEventListener('click', performSearch);
 document.getElementById('search-input').addEventListener('keypress', e => { if(e.key==='Enter') performSearch(); });
 
 function performSearch() {
   const q = document.getElementById('search-input').value.trim();
   
-  // If empty search, show featured
   if(!q) {
     document.getElementById('home-title').innerHTML = '🔥 Featured Listings';
     renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
@@ -231,16 +241,12 @@ function performSearch() {
   
   const query = q.toLowerCase();
   
-  // Filter products - search in title, brand, description, subcategory
   const results = [...motorbikeProducts, ...equipmentProducts].filter(p => {
     const searchText = `${p.title} ${p.brand} ${p.desc} ${p.subcategory} ${p.location}`.toLowerCase();
     return searchText.includes(query);
   });
   
-  // Update title with result count
   document.getElementById('home-title').innerHTML = `🔍 Search Results for "${q}" (${results.length} items)`;
-  
-  // Render ONLY the filtered results
   renderProducts(results, 'home-grid');
   showPage('home');
 }
