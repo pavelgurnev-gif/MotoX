@@ -3,188 +3,78 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MotoX  | Premium Second-Hand Marketplace</title>
+  <title>MotoX Parts | Premium Bulgarian Marketplace</title>
   <link rel="stylesheet" href="styles.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <!-- HEADER -->
   <header class="main-header">
     <div class="header-container">
-      <div class="logo">
-        <span class="logo-icon">🏍️</span>
-        <span class="logo-text">Moto<span class="logo-accent">X</span> 
+      <div class="logo" id="site-logo" style="cursor: pointer;">
+        <span class="logo-icon"></span>
+        <span class="logo-text">Moto<span class="logo-accent">X</span> </span>
       </div>
-
-      <!-- MAIN NAVIGATION -->
       <nav class="main-nav">
-        <button class="nav-btn" data-page="motorbikes">
-          🏍️ Motorbikes <span class="nav-arrow">▼</span>
-        </button>
-        <button class="nav-btn" data-page="equipment">
-          ⚙️ Equipment <span class="nav-arrow">▼</span>
-        </button>
+        <button class="nav-btn" data-page="motorbikes"> Motorbikes <span class="nav-arrow">▼</span></button>
+        <button class="nav-btn" data-page="equipment"> Equipment <span class="nav-arrow">▼</span></button>
       </nav>
-
-      <!-- SEARCH & ACTIONS -->
       <div class="header-right">
         <div class="search-box">
-          <input type="text" id="search-input" placeholder="Search ">
+          <input type="text" id="search-input" placeholder="Search...">
           <button id="search-btn">🔍</button>
         </div>
         <button id="btn-favorites" class="action-btn">
           <span class="icon">❤️</span>
           <span class="count" id="fav-count">0</span>
         </button>
-        <button id="btn-login" class="action-btn">👤</button>
-        <button id="btn-add-product" class="action-btn primary">+ Sell</button>
+        <button id="btn-profile" class="action-btn" onclick="openProfile()">👤 Profile</button>
+        <button id="btn-login" class="action-btn" onclick="openAuthModal()">🔑 Login</button>
+        <button id="btn-add-product" class="action-btn primary" onclick="openAddForm()">+ Sell</button>
       </div>
     </div>
-
-    <!-- CATEGORY SUB-MENUS (Dropdowns) -->
     <div class="category-dropdown" id="motorbikes-dropdown">
       <div class="dropdown-grid">
-        <a href="#" class="dropdown-item" data-type="Enduro">
-          <span class="dropdown-icon">🌲</span>
-          <div>
-            <strong>Enduro</strong>
-            <small>Off-road endurance parts</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-type="Cross">
-          <span class="dropdown-icon">🏁</span>
-          <div>
-            <strong>Motocross</strong>
-            <small>Racing & competition</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-type="Track">
-          <span class="dropdown-icon">🛣️</span>
-          <div>
-            <strong>Track</strong>
-            <small>Supermoto & street</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-type="Trail">
-          <span class="dropdown-icon">🏔️</span>
-          <div>
-            <strong>Trail</strong>
-            <small>Adventure & touring</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-type="Supermoto">
-          <span class="dropdown-icon">💨</span>
-          <div>
-            <strong>Supermoto</strong>
-            <small>Mixed terrain performance</small>
-          </div>
-        </a>
+        <a href="#" class="dropdown-item" data-type="Enduro"><span class="dropdown-icon"></span><div><strong>Enduro</strong><small>Off-road endurance</small></div></a>
+        <a href="#" class="dropdown-item" data-type="Cross"><span class="dropdown-icon"></span><div><strong>Motocross</strong><small>Racing & competition</small></div></a>
+        <a href="#" class="dropdown-item" data-type="Track"><span class="dropdown-icon"></span><div><strong>Track</strong><small>Supermoto & street</small></div></a>
+        <a href="#" class="dropdown-item" data-type="Trail"><span class="dropdown-icon"></span><div><strong>Trail</strong><small>Adventure & touring</small></div></a>
       </div>
     </div>
-
     <div class="category-dropdown" id="equipment-dropdown">
       <div class="dropdown-grid">
-        <a href="#" class="dropdown-item" data-cat="Helmets">
-          <span class="dropdown-icon">⛑️</span>
-          <div>
-            <strong>Helmets</strong>
-            <small>Full-face, modular, off-road</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-cat="Boots">
-          <span class="dropdown-icon">🥾</span>
-          <div>
-            <strong>Boots</strong>
-            <small>Motocross & enduro footwear</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-cat="Gloves">
-          <span class="dropdown-icon">🧤</span>
-          <div>
-            <strong>Gloves</strong>
-            <small>Grip, protection, ventilation</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-cat="Armor">
-          <span class="dropdown-icon">🛡️</span>
-          <div>
-            <strong>Armor</strong>
-            <small>Chest, back, shoulder protectors</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-cat="Knee Pads">
-          <span class="dropdown-icon">🦵</span>
-          <div>
-            <strong>Knee Pads</strong>
-            <small>Impact protection for knees</small>
-          </div>
-        </a>
-        <a href="#" class="dropdown-item" data-cat="Armrests">
-          <span class="dropdown-icon">💪</span>
-          <div>
-            <strong>Armrests</strong>
-            <small>Elbow & forearm protection</small>
-          </div>
-        </a>
+        <a href="#" class="dropdown-item" data-cat="Helmets"><span class="dropdown-icon"></span><div><strong>Helmets</strong><small>Full-face, modular</small></div></a>
+        <a href="#" class="dropdown-item" data-cat="Boots"><span class="dropdown-icon"></span><div><strong>Boots</strong><small>Motocross footwear</small></div></a>
+        <a href="#" class="dropdown-item" data-cat="Gloves"><span class="dropdown-icon"></span><div><strong>Gloves</strong><small>Grip & protection</small></div></a>
+        <a href="#" class="dropdown-item" data-cat="Armor"><span class="dropdown-icon"></span><div><strong>Armor</strong><small>Chest & back protectors</small></div></a>
       </div>
     </div>
   </header>
 
-  <!-- MAIN CONTENT -->
   <main>
-    <!-- HOME PAGE -->
     <section id="home-section" class="page-section active">
-      <!-- HERO SLIDESHOW -->
       <div class="hero-slideshow">
         <div class="slideshow-track" id="slideshow-track"></div>
         <button class="slide-nav prev" onclick="changeSlide(-1)">❮</button>
         <button class="slide-nav next" onclick="changeSlide(1)">❯</button>
         <div class="slide-dots" id="slide-dots"></div>
       </div>
-
-      <!-- CATEGORY CARDS -->
       <div class="category-cards">
-        <div class="category-card motorbikes-card" data-page="motorbikes">
-          <div class="card-icon">🏍️</div>
-          <h3>Motorbikes</h3>
-          <p>Find motorbikes for you</p>
-          <span class="card-arrow">→</span>
-        </div>
-        <div class="category-card equipment-card" data-page="equipment">
-          <div class="card-icon">⚙️</div>
-          <h3>Equipment</h3>
-          <p>Find gears for you</p>
-          <span class="card-arrow">→</span>
-        </div>
+        <div class="category-card motorbikes-card" data-page="motorbikes"><div class="card-icon"></div><h3>Motorbikes</h3><p>Find your next ride</p><span class="card-arrow">→</span></div>
+        <div class="category-card equipment-card" data-page="equipment"><div class="card-icon"></div><h3>Equipment</h3><p>Upgrade your gear</p><span class="card-arrow">→</span></div>
       </div>
-
-      <!-- FEATURED PRODUCTS -->
-      <div class="section-header">
-        <h2>🔥 Featured Listings</h2>
-        <a href="#" class="view-all" data-page="motorbikes">View All Motorbikes →</a>
-      </div>
+      <div class="section-header"><h2 id="home-title">🔥 Featured Listings</h2><a href="#" class="view-all" data-page="motorbikes">View All →</a></div>
       <div id="home-grid" class="product-grid"></div>
     </section>
 
-    <!-- MOTORBIKES CATEGORY PAGE -->
     <section id="motorbikes-section" class="page-section">
-      <div class="category-header">
-        <h1>🏍️ Motorbikes</h1>
-        <p>Quality second-hand motorbikes</p>
-        <button class="btn-add" onclick="openAddForm('motorbikes')">+ List Your Motorbike</button>
-      </div>
-
-      <!-- BIKE TYPE FILTERS -->
+      <div class="category-header"><h1> Motorbikes</h1><p>Quality second-hand motorcycles in Bulgaria</p><button class="btn-add" onclick="openAddForm('motorbikes')">+ List Your Motorbike</button></div>
       <div class="subcategory-filters bike-type-filters">
         <button class="subfilter active" data-biketype="All">All Types</button>
-        <button class="subfilter" data-biketype="Cross">🏁 Cross</button>
-        <button class="subfilter" data-biketype="Enduro">🌲 Enduro</button>
-        <button class="subfilter" data-biketype="Track">🛣️ Track</button>
-        <button class="subfilter" data-biketype="Trail">🏔️ Trail</button>
-        <button class="subfilter" data-biketype="Supermoto">💨 Supermoto</button>
+        <button class="subfilter" data-biketype="Cross"> Cross</button>
+        <button class="subfilter" data-biketype="Enduro"> Enduro</button>
+        <button class="subfilter" data-biketype="Track"> Track</button>
+        <button class="subfilter" data-biketype="Trail"> Trail</button>
       </div>
-
-      <!-- BRAND FILTERS -->
       <div class="subcategory-filters brand-filters">
         <button class="subfilter active" data-brand="All">All Brands</button>
         <button class="subfilter" data-brand="KTM">KTM</button>
@@ -195,180 +85,140 @@
         <button class="subfilter" data-brand="Beta">Beta</button>
         <button class="subfilter" data-brand="Sherco">Sherco</button>
       </div>
-
       <div id="motorbikes-grid" class="product-grid"></div>
     </section>
 
-    <!-- EQUIPMENT CATEGORY PAGE -->
     <section id="equipment-section" class="page-section">
-      <div class="category-header">
-        <h1>⚙️ Quality Second-Hand Rider Equipment</h1>
-        <p>Helmets, boots, gloves, armor & protective gear</p>
-        <button class="btn-add" onclick="openAddForm('equipment')">+ List Your Gear</button>
-      </div>
-
-      <!-- SUBCATEGORY FILTERS -->
+      <div class="category-header"><h1> Rider Equipment</h1><p>Helmets, boots, gloves & protective gear</p><button class="btn-add" onclick="openAddForm('equipment')">+ List Your Gear</button></div>
       <div class="subcategory-filters">
         <button class="subfilter active" data-cat="All">All Gear</button>
         <button class="subfilter" data-cat="Helmets">Helmets</button>
         <button class="subfilter" data-cat="Boots">Boots</button>
         <button class="subfilter" data-cat="Gloves">Gloves</button>
         <button class="subfilter" data-cat="Armor">Armor</button>
-        <button class="subfilter" data-cat="Knee Pads">Knee Pads</button>
-        <button class="subfilter" data-cat="Armrests">Armrests</button>
       </div>
-
       <div id="equipment-grid" class="product-grid"></div>
     </section>
 
-    <!-- PRODUCT DETAIL PAGE -->
     <section id="detail-section" class="page-section">
       <button class="back-btn" onclick="goBack()">← Back</button>
       <div id="product-detail" class="detail-container"></div>
     </section>
 
-    <!-- ADD PRODUCT PAGE -->
     <section id="add-section" class="page-section">
       <button class="back-btn" onclick="showPage('home')">← Cancel</button>
       <h2>📦 List Your Item</h2>
       <form id="add-form" class="sell-form">
         <div class="form-row">
-          <div class="form-group">
-            <label>Item Name *</label>
-            <input type="text" id="add-title" placeholder="e.g., KTM 250SX" required>
-          </div>
-          <div class="form-group">
-            <label>Price (USD) *</label>
-            <input type="number" id="add-price" placeholder="150" required>
-          </div>
+          <div class="form-group"><label>Item Name *</label><input type="text" id="add-title" placeholder="e.g., KTM 250SX" required></div>
+          <div class="form-group"><label>Price (EUR) *</label><input type="number" id="add-price" placeholder="2500" required></div>
         </div>
-
-        <div class="form-group">
-          <label>Description *</label>
-          <textarea id="add-desc" placeholder="Describe condition, hours used, brand, any defects..." required></textarea>
-        </div>
-
-        <!-- CATEGORY SELECTION -->
+        <div class="form-group"><label>Description *</label><textarea id="add-desc" placeholder="Condition, hours, upgrades..." required></textarea></div>
         <div class="form-row">
           <div class="form-group">
             <label>Category *</label>
             <select id="add-main-category" required onchange="updateSubcategories()">
               <option value="">Select Category</option>
-              <option value="motorbikes">🏍️ Motorbikes</option>
-              <option value="equipment">⚙️ Equipment</option>
+              <option value="motorbikes"> Motorbikes</option>
+              <option value="equipment"> Equipment</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Subcategory *</label>
-            <select id="add-subcategory" required disabled>
-              <option value="">Select main category first</option>
-            </select>
-          </div>
+          <div class="form-group"><label>Subcategory *</label><select id="add-subcategory" required disabled><option value="">Select first</option></select></div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
             <label>Brand *</label>
             <select id="add-brand" required>
               <option value="">Select Brand</option>
-              <!-- Motorbike brands -->
-              <optgroup label="Motorbike Brands" id="motorbike-brands">
-                <option value="KTM">KTM</option>
-                <option value="Yamaha">Yamaha</option>
-                <option value="Honda">Honda</option>
-                <option value="Husqvarna">Husqvarna</option>
-                <option value="GasGas">GasGas</option>
-                <option value="Beta">Beta</option>
-                <option value="Sherco">Sherco</option>
-                <option value="TM Racing">TM Racing</option>
+              <optgroup label="Motorbikes" id="motorbike-brands">
+                <option value="KTM">KTM</option><option value="Yamaha">Yamaha</option><option value="Honda">Honda</option>
+                <option value="Husqvarna">Husqvarna</option><option value="GasGas">GasGas</option><option value="Beta">Beta</option><option value="Sherco">Sherco</option>
               </optgroup>
-              <!-- Gear brands -->
-              <optgroup label="Gear Brands" id="gear-brands" style="display:none">
-                <option value="Alpinestars">Alpinestars</option>
-                <option value="Fox Racing">Fox Racing</option>
-                <option value="Thor">Thor</option>
-                <option value="Leatt">Leatt</option>
-                <option value="100%">100%</option>
-                <option value="Bell">Bell</option>
-                <option value="Shoei">Shoei</option>
-                <option value="Arai">Arai</option>
+              <optgroup label="Gear" id="gear-brands" style="display:none">
+                <option value="Alpinestars">Alpinestars</option><option value="Fox Racing">Fox Racing</option><option value="Thor">Thor</option>
+                <option value="Leatt">Leatt</option><option value="100%">100%</option><option value="Bell">Bell</option>
               </optgroup>
             </select>
           </div>
           <div class="form-group">
-            <label>Location *</label>
-            <input type="text" id="add-location" placeholder="City, Country" required>
+            <label>City (Bulgaria) *</label>
+            <select id="add-location" required>
+              <option value="">Select City</option>
+              <option value="Sofia">Sofia</option><option value="Plovdiv">Plovdiv</option><option value="Varna">Varna</option>
+              <option value="Burgas">Burgas</option><option value="Ruse">Ruse</option><option value="Stara Zagora">Stara Zagora</option>
+              <option value="Pleven">Pleven</option><option value="Blagoevgrad">Blagoevgrad</option><option value="Veliko Tarnovo">Veliko Tarnovo</option>
+              <option value="Gabrovo">Gabrovo</option><option value="Haskovo">Haskovo</option><option value="Shumen">Shumen</option>
+              <option value="Dobrich">Dobrich</option><option value="Yambol">Yambol</option><option value="Pazardzhik">Pazardzhik</option>
+              <option value="Montana">Montana</option><option value="Vratsa">Vratsa</option><option value="Lovech">Lovech</option>
+            </select>
           </div>
         </div>
-
-        <!-- IMAGE UPLOAD -->
+        <div class="form-row">
+          <div class="form-group">
+            <label>Phone for Contact *</label>
+            <input type="tel" id="add-phone" placeholder="+359 888 123456" required>
+          </div>
+          <div class="form-group">
+            <label>Email for Contact *</label>
+            <input type="email" id="add-email" placeholder="seller@example.com" required>
+          </div>
+        </div>
         <div class="form-group">
           <label>Product Photo</label>
           <div class="image-upload">
             <input type="file" id="add-image-file" accept="image/*" class="file-input">
-            <label for="add-image-file" class="file-label">
-              <span class="upload-icon">📷</span>
-              <span class="upload-text">Click to upload photo</span>
-              <span class="upload-hint">JPG, PNG up to 2MB</span>
-            </label>
+            <label for="add-image-file" class="file-label"><span class="upload-icon">📷</span><span class="upload-text">Click to upload</span><span class="upload-hint">JPG, PNG up to 2MB</span></label>
             <div id="image-preview" class="image-preview"></div>
           </div>
           <input type="hidden" id="add-image-base64">
         </div>
-
-        <button type="submit" class="submit-btn">🚀 Publish Listing</button>
+        <button type="submit" class="submit-btn"> Publish Listing</button>
       </form>
+    </section>
+
+    <section id="profile-section" class="page-section">
+      <button class="back-btn" onclick="showPage('home')">← Back</button>
+      <div class="profile-container">
+        <h2>👤 <span id="profile-username">Guest</span>'s Profile</h2>
+        <div class="profile-tabs">
+          <button class="tab-btn active" data-tab="my-listings"> My Listings</button>
+          <button class="tab-btn" data-tab="edit-profile"> Edit Profile</button>
+          <button class="tab-btn" data-tab="delete-account"> Delete Account</button>
+        </div>
+        <div id="tab-my-listings" class="tab-content active"><div id="my-listings-grid" class="product-grid"></div></div>
+        <div id="tab-edit-profile" class="tab-content">
+          <form id="edit-profile-form" class="sell-form">
+            <label>Change Password</label>
+            <input type="password" id="edit-password" placeholder="New password" required>
+            <button type="submit" class="submit-btn">Save Changes</button>
+          </form>
+        </div>
+        <div id="tab-delete-account" class="tab-content">
+          <p class="warning-text">This action cannot be undone. All your listings and data will be permanently removed.</p>
+          <button id="btn-delete-account" class="submit-btn" style="background: #ff1744;">Delete My Account</button>
+        </div>
+      </div>
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="main-footer">
     <div class="footer-content">
-      <div class="footer-section">
-        <h3>🏍️ MotoX Parts</h3>
-        <p>Premium second-hand motorbikes. Buy smart, ride hard.</p>
-      </div>
-      <div class="footer-section">
-        <h4>Motorbikes</h4>
-        <ul>
-          <li><a href="#" data-page="motorbikes" data-type="Enduro">Enduro</a></li>
-          <li><a href="#" data-page="motorbikes" data-type="Cross">Motocross</a></li>
-          <li><a href="#" data-page="motorbikes" data-type="Track">Track</a></li>
-          <li><a href="#" data-page="motorbikes" data-type="Trail">Trail</a></li>
-        </ul>
-      </div>
-      <div class="footer-section">
-        <h4>Equipment</h4>
-        <ul>
-          <li><a href="#" data-page="equipment" data-cat="Helmets">Helmets</a></li>
-          <li><a href="#" data-page="equipment" data-cat="Boots">Boots</a></li>
-          <li><a href="#" data-page="equipment" data-cat="Gloves">Gloves</a></li>
-          <li><a href="#" data-page="equipment" data-cat="Armor">Armor</a></li>
-        </ul>
-      </div>
+      <div class="footer-section"><h3> MotoX </h3><p>Premium Bulgarian marketplace. Buy smart, ride hard.</p></div>
+      <div class="footer-section"><h4>Categories</h4><ul><li><a href="#" data-page="motorbikes">Motorbikes</a></li><li><a href="#" data-page="equipment">Equipment</a></li></ul></div>
     </div>
-    <div class="footer-bottom">
-      <p>© 2026 MotoX Parts - Ride Hard 🏁</p>
-    </div>
+    <div class="footer-bottom"><p>© 2026 MotoX Parts - Ride Hard 🏁</p></div>
   </footer>
 
-  <!-- LOGIN MODAL -->
   <div id="auth-modal" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
-      <h2 id="auth-title">Welcome</h2>
+      <h2 id="auth-title">Login</h2>
       <form id="auth-form">
-        <div class="form-group">
-          <label>Username</label>
-          <input type="text" id="auth-username" placeholder="Your username" required>
-        </div>
-        <div class="form-group">
-          <label>Password</label>
-          <input type="password" id="auth-password" placeholder="Your password" required>
-        </div>
+        <div class="form-group"><label>Username</label><input type="text" id="auth-username" placeholder="Your username" required></div>
+        <div class="form-group"><label>Password</label><input type="password" id="auth-password" placeholder="Your password" required></div>
         <button type="submit" class="modal-btn">Login</button>
       </form>
-      <p id="toggle-auth">New here? <a href="#">Create account</a></p>
+      <p id="toggle-auth">Don't have an account? <a href="#">Register here</a></p>
     </div>
   </div>
 
