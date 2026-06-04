@@ -1,4 +1,4 @@
-const DEMO_DATA_VERSION = 'v11';
+const DEMO_DATA_VERSION = 'v17';
 let users = JSON.parse(localStorage.getItem('motox_users')) || [];
 let currentUser = localStorage.getItem('motox_user') || null;
 let currentPage = 'home';
@@ -6,6 +6,10 @@ let currentSlide = 0;
 let slideInterval;
 let currentBikeTypeFilter = 'All';
 let currentBrandFilter = 'All';
+let editingId = null;
+
+// ✅ NAVIGATION HISTORY STACK
+let viewHistory = [];
 
 const MOTORCYCLE_IMAGES = {
   'KTM': {'250SX': 'https://motohouse.bg/wp-content/uploads/2025/03/KTM_250_SX_2025_MOTOHOUSE2.jpg', '450SX-F': 'https://motohouse.bg/wp-content/uploads/2025/03/KTM_450_SX_F_2025_MOTOHOUSE.jpg', 'default': 'https://motohouse.bg/wp-content/uploads/2025/03/KTM_250_SX_2025_MOTOHOUSE2.jpg'},
@@ -79,7 +83,12 @@ function initImages() {
 function saveMotorbikes() { try { localStorage.setItem('motox_motorbikes', JSON.stringify(motorbikeProducts)); } catch(e) { alert('⚠️ Storage full!'); } }
 function saveEquipment() { try { localStorage.setItem('motox_equipment', JSON.stringify(equipmentProducts)); } catch(e) { alert('⚠️ Storage full!'); } }
 function saveFavorites() { localStorage.setItem('motox_favorites', JSON.stringify(favorites)); }
-function updateFavCount() { document.getElementById('fav-count').textContent = favorites.length; }
+
+function updateFavCount() {
+  const el = document.getElementById('fav-count');
+  if (el) el.textContent = favorites.length;
+  saveFavorites();
+}
 
 function registerUser(u, p) {
   if (users.find(x => x.username === u)) return false;
@@ -95,26 +104,74 @@ function loginUser(u, p) {
   return true;
 }
 
+function toggleHomeElements(show) {
+  const slideshow = document.querySelector('#home-section .hero-slideshow');
+  const cards = document.querySelector('#home-section .category-cards');
+  const header = document.querySelector('.section-header');
+  const title = document.getElementById('home-title');
+  if (show) {
+    if (slideshow) slideshow.style.display = '';
+    if (cards) cards.style.display = '';
+    if (header) header.style.display = 'flex';
+    if (title) title.style.display = 'block';
+  } else {
+    if (slideshow) slideshow.style.display = 'none';
+    if (cards) cards.style.display = 'none';
+    if (header) header.style.display = 'none';
+    if (title) title.style.display = 'none';
+  }
+}
+
 function showPage(page, filter = {}) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(`${page}-section`);
-  if (el) { el.classList.add('active'); currentPage = page; }
+  if (el) { 
+    el.classList.add('active'); 
+    currentPage = page; 
+  }
   window.scrollTo(0,0);
   
-  if (page === 'home' && !document.getElementById('home-title').textContent.includes('Search') && !document.getElementById('home-title').textContent.includes('Favorite')) {
-    document.getElementById('home-title').innerHTML = '🔥 Featured Listings';
-    renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
+  if (page === 'home') {
+    toggleHomeElements(true);
+    const titleEl = document.getElementById('home-title');
+    if (!titleEl.textContent.includes('Search') && !titleEl.textContent.includes('Favorite')) {
+      titleEl.innerHTML = '🔥 Featured Listings';
+      renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
+    }
   }
-  else if (page === 'motorbikes') renderMotorbikeProducts(filter);
-  else if (page === 'equipment') renderEquipmentProducts(filter);
+  else if (page === 'motorbikes') {
+    if (filter.bikeType) currentBikeTypeFilter = filter.bikeType;
+    if (filter.brand) currentBrandFilter = filter.brand;
+    renderMotorbikeProducts();
+    updateFilterUI();
+  }
+  else if (page === 'equipment') {
+    renderEquipmentProducts(filter);
+  }
 }
 
-function goBack() { history.back(); }
-window.addEventListener('popstate', () => showPage('home'));
+function updateFilterUI() {
+  document.querySelectorAll('.bike-type-filters .subfilter').forEach(b => b.classList.toggle('active', b.dataset.biketype === currentBikeTypeFilter));
+  document.querySelectorAll('.brand-filters .subfilter').forEach(b => b.classList.toggle('active', b.dataset.brand === currentBrandFilter));
+}
 
-// ✅ ФИКС: Event listeners за всички филтри
+// ✅ PUSH TO HISTORY & BROWSER STATE
+function pushNavigationState() {
+  viewHistory.push({ page: currentPage, bikeType: currentBikeTypeFilter, brand: currentBrandFilter });
+  history.pushState({ view: 'subpage' }, '', '');
+}
+
+// ✅ BROWSER BACK BUTTON HANDLER
+window.addEventListener('popstate', () => {
+  if (viewHistory.length > 0) {
+    const prev = viewHistory.pop();
+    showPage(prev.page, { bikeType: prev.bikeType, brand: prev.brand });
+  } else {
+    showPage('home');
+  }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
-  // 1️⃣ Филтри за тип мотори (Cross, Enduro...)
   document.querySelectorAll('.bike-type-filters .subfilter').forEach(b => b.addEventListener('click', e => {
     e.currentTarget.parentElement.querySelectorAll('.subfilter').forEach(x => x.classList.remove('active'));
     e.currentTarget.classList.add('active');
@@ -122,7 +179,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMotorbikeProducts();
   }));
   
-  // 2️⃣ Филтри за марки мотори (KTM, Yamaha...)
   document.querySelectorAll('.brand-filters .subfilter').forEach(b => b.addEventListener('click', e => {
     e.currentTarget.parentElement.querySelectorAll('.subfilter').forEach(x => x.classList.remove('active'));
     e.currentTarget.classList.add('active');
@@ -130,7 +186,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderMotorbikeProducts();
   }));
 
-  // 🔧 3️⃣ ФИКС: Филтри за секция Екипировка (Helmets, Boots...)
   document.querySelectorAll('#equipment-section .subcategory-filters .subfilter').forEach(btn => {
     btn.addEventListener('click', e => {
       e.currentTarget.parentElement.querySelectorAll('.subfilter').forEach(x => x.classList.remove('active'));
@@ -189,7 +244,8 @@ function renderProducts(list, gridId) {
 function openDetail(id, cat) {
   const p = (cat==='motorbikes'?motorbikeProducts:equipmentProducts).find(x=>x.id===id);
   if(!p) return;
-  history.pushState({page:'detail'}, '', window.location.href);
+  pushNavigationState(); // ✅ Saves state for browser back
+  
   const img = p.image || (cat==='motorbikes' ? getMotorcycleImage(p.brand, p.title, p.subcategory) : getEquipmentImage(p.subcategory));
   document.getElementById('product-detail').innerHTML = `
     <img src="${img}" alt="${p.title}" onerror="this.src='https://placehold.co/800x400/eee/666?text=No+Image'">
@@ -209,7 +265,7 @@ function openDetail(id, cat) {
 
 function toggleFav(id) {
   favorites.includes(id) ? favorites=favorites.filter(f=>f!==id) : favorites.push(id);
-  saveFavorites(); updateFavCount(); 
+  updateFavCount();
   if(currentPage==='motorbikes') renderMotorbikeProducts();
   else if(currentPage==='equipment') renderEquipmentProducts();
   else if(currentPage==='home' && document.getElementById('home-title').textContent.includes('Favorite')) {
@@ -219,9 +275,10 @@ function toggleFav(id) {
 
 function showFavoritesOnly() {
   const f = [...motorbikeProducts, ...equipmentProducts].filter(p => favorites.includes(p.id));
-  document.getElementById('home-title').innerHTML = `❤️ Your Favorite Items (${f.length})`;
+  toggleHomeElements(false);
   renderProducts(f, 'home-grid');
-  showPage('home');
+  currentPage = 'home';
+  window.scrollTo(0,0);
 }
 
 document.getElementById('btn-favorites').addEventListener('click', showFavoritesOnly);
@@ -231,21 +288,18 @@ document.getElementById('search-input').addEventListener('keypress', e => { if(e
 
 function performSearch() {
   const q = document.getElementById('search-input').value.trim();
-  
   if(!q) {
+    toggleHomeElements(true);
     document.getElementById('home-title').innerHTML = '🔥 Featured Listings';
     renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
     showPage('home');
     return;
   }
-  
   const query = q.toLowerCase();
-  
   const results = [...motorbikeProducts, ...equipmentProducts].filter(p => {
     const searchText = `${p.title} ${p.brand} ${p.desc} ${p.subcategory} ${p.location}`.toLowerCase();
     return searchText.includes(query);
   });
-  
   document.getElementById('home-title').innerHTML = `🔍 Search Results for "${q}" (${results.length} items)`;
   renderProducts(results, 'home-grid');
   showPage('home');
@@ -253,26 +307,49 @@ function performSearch() {
 
 function openProfile() {
   if(!currentUser) return alert('⚠️ Please login first!');
+  pushNavigationState(); // ✅ Saves state for browser back
   document.getElementById('profile-username').textContent = currentUser;
   renderMyListings();
   showPage('profile');
 }
+
 function renderMyListings() {
-  const grid = document.getElementById('my-listings-grid'); grid.innerHTML = '';
+  const grid = document.getElementById('my-listings-grid'); 
+  grid.innerHTML = '';
   const mine = [...motorbikeProducts, ...equipmentProducts].filter(p => p.owner === currentUser);
-  if(mine.length===0) grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;padding:30px;">No listings yet.</p>';
+  if (mine.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;color:#666;padding:30px;">No listings yet. <a href="#" onclick="openAddForm()">Create one!</a></p>';
+    return;
+  }
   mine.forEach(p => {
-    const div = document.createElement('div'); div.className = 'card'; div.style.position='relative';
-    div.innerHTML = `<div style="position:absolute;top:10px;right:10px;background:red;color:white;padding:4px 8px;border-radius:4px;cursor:pointer;z-index:10" onclick="deleteListing(${p.id})">🗑️</div>` + 
-    createCard(p, p.category).outerHTML.split('>')[1];
-    grid.appendChild(div);
+    const card = createCard(p, p.category);
+    card.style.position = 'relative';
+    const actions = document.createElement('div');
+    actions.style.cssText = 'position:absolute;top:10px;right:10px;display:flex;gap:8px;z-index:20;';
+    
+    const editBtn = document.createElement('button');
+    editBtn.textContent = '✏️ Edit';
+    editBtn.style.cssText = 'background:#FFAA00;color:black;padding:6px 12px;border:none;border-radius:4px;cursor:pointer;font-weight:bold;font-size:0.8rem;';
+    editBtn.onclick = (e) => { e.stopPropagation(); openAddForm(p.category, p.id); };
+    
+    const delBtn = document.createElement('button');
+    delBtn.textContent = '🗑️ Delete';
+    delBtn.style.cssText = 'background:#ff1744;color:white;padding:6px 12px;border:none;border-radius:4px;cursor:pointer;font-weight:bold;font-size:0.8rem;';
+    delBtn.onclick = (e) => { e.stopPropagation(); deleteListing(p.id); };
+    
+    actions.appendChild(editBtn);
+    actions.appendChild(delBtn);
+    card.appendChild(actions);
+    grid.appendChild(card);
   });
 }
+
 window.deleteListing = (id) => {
   if(!confirm('Delete this listing?')) return;
   motorbikeProducts = motorbikeProducts.filter(p=>p.id!==id);
   equipmentProducts = equipmentProducts.filter(p=>p.id!==id);
   saveMotorbikes(); saveEquipment(); renderMyListings();
+  updateFavCount();
 };
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -303,14 +380,48 @@ document.getElementById('btn-delete-account').addEventListener('click', () => {
   }
 });
 
-function openAddForm(cat='') {
+function openAddForm(cat='', editId=null) {
   if(!currentUser) return alert('⚠️ Please login first!');
-  document.getElementById('add-form').reset();
+  editingId = editId;
+  pushNavigationState(); // ✅ Saves state for browser back
+  const form = document.getElementById('add-form');
+  form.reset();
   document.getElementById('image-preview').innerHTML = '';
   document.getElementById('add-image-base64').value = '';
-  if(cat) { document.getElementById('add-main-category').value = cat; updateSubcategories(); }
+  
+  const btn = form.querySelector('.submit-btn');
+  
+  if (editId) {
+    const p = [...motorbikeProducts, ...equipmentProducts].find(x => x.id === editId);
+    if (p) {
+      document.getElementById('add-title').value = p.title;
+      document.getElementById('add-price').value = p.price;
+      document.getElementById('add-desc').value = p.desc;
+      document.getElementById('add-main-category').value = p.category;
+      updateSubcategories();
+      setTimeout(() => {
+        document.getElementById('add-subcategory').value = p.subcategory;
+        document.getElementById('add-brand').value = p.brand;
+        document.getElementById('add-location').value = p.location;
+        document.getElementById('add-phone').value = p.phone || '';
+        document.getElementById('add-email').value = p.email || '';
+        document.getElementById('add-image-base64').value = p.image || '';
+        if (p.image && p.image.startsWith('data:')) {
+          document.getElementById('image-preview').innerHTML = `<img src="${p.image}">`;
+        }
+      }, 50);
+      btn.textContent = '💾 Update Listing';
+    }
+  } else {
+    btn.textContent = '🚀 Publish Listing';
+    if (cat) {
+      document.getElementById('add-main-category').value = cat;
+      updateSubcategories();
+    }
+  }
   showPage('add');
 }
+
 function updateSubcategories() {
   const c = document.getElementById('add-main-category').value;
   const s = document.getElementById('add-subcategory'); s.innerHTML='<option value="">Select</option>'; s.disabled=!c;
@@ -331,8 +442,8 @@ imgInput.addEventListener('change', e => {
 document.getElementById('add-form').addEventListener('submit', e => {
   e.preventDefault();
   const c = document.getElementById('add-main-category').value;
-  const item = {
-    id: Date.now(), 
+  const newItem = {
+    id: editingId || Date.now(), 
     title: document.getElementById('add-title').value, 
     desc: document.getElementById('add-desc').value,
     price: parseFloat(document.getElementById('add-price').value), 
@@ -345,11 +456,27 @@ document.getElementById('add-form').addEventListener('submit', e => {
     email: document.getElementById('add-email').value,
     image: document.getElementById('add-image-base64').value || (c==='motorbikes'?getMotorcycleImage(document.getElementById('add-brand').value, document.getElementById('add-title').value, document.getElementById('add-subcategory').value):getEquipmentImage(document.getElementById('add-subcategory').value))
   };
-  if(c==='motorbikes') { motorbikeProducts.unshift(item); saveMotorbikes(); }
-  else { equipmentProducts.unshift(item); saveEquipment(); }
-  e.target.reset(); document.getElementById('image-preview').innerHTML=''; document.getElementById('add-image-base64').value='';
+
+  if (editingId) {
+    const arr = c === 'motorbikes' ? motorbikeProducts : equipmentProducts;
+    const idx = arr.findIndex(x => x.id === editingId);
+    if (idx > -1) arr[idx] = newItem;
+  } else {
+    if(c==='motorbikes') motorbikeProducts.unshift(newItem);
+    else equipmentProducts.unshift(newItem);
+  }
+
+  if (c === 'motorbikes') saveMotorbikes();
+  else saveEquipment();
+
+  e.target.reset(); 
+  document.getElementById('image-preview').innerHTML=''; 
+  document.getElementById('add-image-base64').value='';
+  editingId = null;
+  document.getElementById('add-form').querySelector('.submit-btn').textContent = '🚀 Publish Listing';
+  
   renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
-  renderMotorbikeProducts(); renderEquipmentProducts(); initSlideshow(); showPage('home'); alert('🚀 Published!');
+  renderMotorbikeProducts(); renderEquipmentProducts(); initSlideshow(); showPage('home'); alert('✅ Listing saved!');
 });
 
 let isLogin = true;
