@@ -1,4 +1,4 @@
-const DEMO_DATA_VERSION = 'v17';
+const DEMO_DATA_VERSION = 'v19';
 let users = JSON.parse(localStorage.getItem('motox_users')) || [];
 let currentUser = localStorage.getItem('motox_user') || null;
 let currentPage = 'home';
@@ -7,8 +7,6 @@ let slideInterval;
 let currentBikeTypeFilter = 'All';
 let currentBrandFilter = 'All';
 let editingId = null;
-
-// ✅ NAVIGATION HISTORY STACK
 let viewHistory = [];
 
 const MOTORCYCLE_IMAGES = {
@@ -122,6 +120,30 @@ function toggleHomeElements(show) {
   }
 }
 
+// ✅ LOGO CLICK: Hard reset to main page
+function goToHome() {
+  viewHistory = [];
+  history.replaceState({ view: 'home' }, '', '');
+  
+  currentBikeTypeFilter = 'All';
+  currentBrandFilter = 'All';
+  updateFilterUI();
+  
+  document.getElementById('search-input').value = '';
+  
+  document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('home-section').classList.add('active');
+  
+  toggleHomeElements(true);
+  const titleEl = document.getElementById('home-title');
+  titleEl.innerHTML = '🔥 Featured Listings';
+  renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
+  
+  currentPage = 'home';
+  window.scrollTo(0, 0);
+}
+
+// ✅ Normal page navigation
 function showPage(page, filter = {}) {
   document.querySelectorAll('.page-section').forEach(s => s.classList.remove('active'));
   const el = document.getElementById(`${page}-section`);
@@ -132,9 +154,9 @@ function showPage(page, filter = {}) {
   window.scrollTo(0,0);
   
   if (page === 'home') {
-    toggleHomeElements(true);
     const titleEl = document.getElementById('home-title');
-    if (!titleEl.textContent.includes('Search') && !titleEl.textContent.includes('Favorite')) {
+    if (!titleEl.textContent.includes('Search')) {
+      toggleHomeElements(true);
       titleEl.innerHTML = '🔥 Featured Listings';
       renderProducts([...motorbikeProducts.slice(0,4), ...equipmentProducts.slice(0,4)], 'home-grid');
     }
@@ -155,19 +177,26 @@ function updateFilterUI() {
   document.querySelectorAll('.brand-filters .subfilter').forEach(b => b.classList.toggle('active', b.dataset.brand === currentBrandFilter));
 }
 
-// ✅ PUSH TO HISTORY & BROWSER STATE
 function pushNavigationState() {
   viewHistory.push({ page: currentPage, bikeType: currentBikeTypeFilter, brand: currentBrandFilter });
   history.pushState({ view: 'subpage' }, '', '');
 }
 
-// ✅ BROWSER BACK BUTTON HANDLER
+function handleBack() {
+  if (viewHistory.length > 0) {
+    const prev = viewHistory.pop();
+    showPage(prev.page, { bikeType: prev.bikeType, brand: prev.brand });
+  } else {
+    goToHome();
+  }
+}
+
 window.addEventListener('popstate', () => {
   if (viewHistory.length > 0) {
     const prev = viewHistory.pop();
     showPage(prev.page, { bikeType: prev.bikeType, brand: prev.brand });
   } else {
-    showPage('home');
+    goToHome();
   }
 });
 
@@ -244,7 +273,7 @@ function renderProducts(list, gridId) {
 function openDetail(id, cat) {
   const p = (cat==='motorbikes'?motorbikeProducts:equipmentProducts).find(x=>x.id===id);
   if(!p) return;
-  pushNavigationState(); // ✅ Saves state for browser back
+  pushNavigationState();
   
   const img = p.image || (cat==='motorbikes' ? getMotorcycleImage(p.brand, p.title, p.subcategory) : getEquipmentImage(p.subcategory));
   document.getElementById('product-detail').innerHTML = `
@@ -264,24 +293,30 @@ function openDetail(id, cat) {
 }
 
 function toggleFav(id) {
-  favorites.includes(id) ? favorites=favorites.filter(f=>f!==id) : favorites.push(id);
+  const wasFav = favorites.includes(id);
+  wasFav ? favorites = favorites.filter(f => f !== id) : favorites.push(id);
   updateFavCount();
+  
+  const favTab = document.getElementById('tab-my-favorites');
+  if (favTab && favTab.classList.contains('active')) {
+    renderProfileFavorites();
+  }
+  
   if(currentPage==='motorbikes') renderMotorbikeProducts();
   else if(currentPage==='equipment') renderEquipmentProducts();
-  else if(currentPage==='home' && document.getElementById('home-title').textContent.includes('Favorite')) {
-    showFavoritesOnly();
-  }
 }
 
-function showFavoritesOnly() {
+function renderProfileFavorites() {
+  const grid = document.getElementById('my-favorites-grid');
+  if (!grid) return;
+  grid.innerHTML = '';
   const f = [...motorbikeProducts, ...equipmentProducts].filter(p => favorites.includes(p.id));
-  toggleHomeElements(false);
-  renderProducts(f, 'home-grid');
-  currentPage = 'home';
-  window.scrollTo(0,0);
+  if (f.length === 0) {
+    grid.innerHTML = '<p style="grid-column:1/-1;text-align:center;padding:30px;color:#666;">No favorites yet.</p>';
+    return;
+  }
+  f.forEach(p => grid.appendChild(createCard(p, p.category)));
 }
-
-document.getElementById('btn-favorites').addEventListener('click', showFavoritesOnly);
 
 document.getElementById('search-btn').addEventListener('click', performSearch);
 document.getElementById('search-input').addEventListener('keypress', e => { if(e.key==='Enter') performSearch(); });
@@ -300,18 +335,33 @@ function performSearch() {
     const searchText = `${p.title} ${p.brand} ${p.desc} ${p.subcategory} ${p.location}`.toLowerCase();
     return searchText.includes(query);
   });
+  toggleHomeElements(false);
   document.getElementById('home-title').innerHTML = `🔍 Search Results for "${q}" (${results.length} items)`;
   renderProducts(results, 'home-grid');
   showPage('home');
 }
 
+// ✅ PROFILE & TABS
 function openProfile() {
   if(!currentUser) return alert('⚠️ Please login first!');
-  pushNavigationState(); // ✅ Saves state for browser back
+  pushNavigationState();
   document.getElementById('profile-username').textContent = currentUser;
   renderMyListings();
   showPage('profile');
 }
+
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
+    btn.classList.add('active');
+    const tabId = `tab-${btn.dataset.tab}`;
+    document.getElementById(tabId).classList.add('active');
+    
+    if (btn.dataset.tab === 'my-listings') renderMyListings();
+    if (btn.dataset.tab === 'my-favorites') renderProfileFavorites();
+  });
+});
 
 function renderMyListings() {
   const grid = document.getElementById('my-listings-grid'); 
@@ -352,15 +402,6 @@ window.deleteListing = (id) => {
   updateFavCount();
 };
 
-document.querySelectorAll('.tab-btn').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(c=>c.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active');
-  });
-});
-
 document.getElementById('edit-profile-form').addEventListener('submit', e => {
   e.preventDefault();
   const newPass = document.getElementById('edit-password').value;
@@ -383,11 +424,12 @@ document.getElementById('btn-delete-account').addEventListener('click', () => {
 function openAddForm(cat='', editId=null) {
   if(!currentUser) return alert('⚠️ Please login first!');
   editingId = editId;
-  pushNavigationState(); // ✅ Saves state for browser back
   const form = document.getElementById('add-form');
   form.reset();
   document.getElementById('image-preview').innerHTML = '';
   document.getElementById('add-image-base64').value = '';
+  
+  document.getElementById('add-email').value = 'pavel.gyurnev@gmail.com';
   
   const btn = form.querySelector('.submit-btn');
   
@@ -404,7 +446,7 @@ function openAddForm(cat='', editId=null) {
         document.getElementById('add-brand').value = p.brand;
         document.getElementById('add-location').value = p.location;
         document.getElementById('add-phone').value = p.phone || '';
-        document.getElementById('add-email').value = p.email || '';
+        document.getElementById('add-email').value = p.email || 'pavel.gyurnev@gmail.com';
         document.getElementById('add-image-base64').value = p.image || '';
         if (p.image && p.image.startsWith('data:')) {
           document.getElementById('image-preview').innerHTML = `<img src="${p.image}">`;
@@ -419,6 +461,7 @@ function openAddForm(cat='', editId=null) {
       updateSubcategories();
     }
   }
+  pushNavigationState();
   showPage('add');
 }
 
@@ -483,7 +526,44 @@ let isLogin = true;
 const modal = document.getElementById('auth-modal');
 window.openAuthModal = () => { if(currentUser) { if(confirm('Logout?')) { localStorage.removeItem('motox_user'); currentUser=null; location.reload(); } return; } modal.style.display='flex'; };
 document.querySelector('.close-modal').addEventListener('click', () => modal.style.display='none');
-window.onclick = e => { if(e.target===modal) modal.style.display='none'; };
+
+// ✅ CONTACT US MODAL FUNCTIONS
+function openContactModal() {
+  document.getElementById('contact-modal').style.display = 'flex';
+}
+
+function closeContactModal() {
+  document.getElementById('contact-modal').style.display = 'none';
+  document.getElementById('contact-form').reset();
+}
+
+// Handle contact form submission
+document.getElementById('contact-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  
+  const name = document.getElementById('contact-name').value;
+  const email = document.getElementById('contact-email').value;
+  const message = document.getElementById('contact-message').value;
+  
+  // Here you would normally send the data to a server
+  // For now, we'll just show an alert
+  alert(`✅ Thank you ${name}!\n\nYour message has been sent.\nWe'll contact you at ${email} soon.`);
+  
+  closeContactModal();
+});
+
+// Close modals when clicking outside
+window.onclick = function(e) {
+  const contactModal = document.getElementById('contact-modal');
+  if (e.target === contactModal) {
+    closeContactModal();
+  }
+  const authModal = document.getElementById('auth-modal');
+  if (e.target === authModal) {
+    authModal.style.display = 'none';
+  }
+};
+
 document.getElementById('toggle-auth').addEventListener('click', e => {
   e.preventDefault(); isLogin=!isLogin;
   document.getElementById('auth-title').textContent = isLogin?'Login':'Register';
@@ -528,7 +608,8 @@ window.goSlide = i => {
   currentSlide=i; s[i].classList.add('active'); dots[i].classList.add('active'); clearInterval(slideInterval); slideInterval=setInterval(()=>changeSlide(1),5000);
 };
 
-document.getElementById('site-logo').addEventListener('click', () => showPage('home'));
+// ✅ UPDATED: Logo now calls goToHome() for hard reset
+document.getElementById('site-logo').addEventListener('click', goToHome);
 document.querySelectorAll('.nav-btn').forEach(b => b.addEventListener('click', () => showPage(b.dataset.page)));
 document.querySelectorAll('.category-card').forEach(c => c.addEventListener('click', () => showPage(c.dataset.page)));
 document.querySelectorAll('.dropdown-item, .footer-section a').forEach(l => {

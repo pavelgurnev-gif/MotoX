@@ -1,7 +1,6 @@
 * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
 
 :root {
-  /* ПО-СВЕТЛА АГРЕСИВНА ПАЛИТРА (Оранжево-Жълто) */
   --primary-accent: #FF5500;
   --dark-accent: #CC4400;
   --neon-accent: #FFAA00;
@@ -12,7 +11,6 @@
   --light-gray: #3a3a3a;
   --white: #ffffff;
   
-  /* ЕФЕКТИ */
   --shadow: 0 4px 20px rgba(255,85,0,0.4);
   --shadow-hover: 0 8px 40px rgba(255,170,0,0.6);
   --glow: 0 0 25px rgba(255,170,0,0.6);
@@ -26,164 +24,75 @@ body {
   font-weight: 500;
 }
 
-/* АГРЕСИВЕН ХЕДЪР */
 .main-header { 
   background: linear-gradient(180deg, var(--black) 0%, var(--medium-gray) 100%);
   border-bottom: 4px solid var(--primary-accent);
-  position: sticky; 
-  top: 0; 
-  z-index: 1000; 
+  position: sticky; top: 0; z-index: 1000; 
   box-shadow: 0 4px 30px rgba(255,85,0,0.4);
 }
 
 .header-container { 
-  display: flex; 
-  align-items: center; 
-  justify-content: space-between; 
-  padding: 15px 30px; 
-  max-width: 1400px; 
-  margin: 0 auto; 
-  gap: 20px; 
-  flex-wrap: wrap; 
+  display: flex; align-items: center; justify-content: space-between; 
+  padding: 15px 30px; max-width: 1400px; margin: 0 auto; gap: 20px; flex-wrap: wrap; 
 }
 
-/* ЛОГО С АГРЕСИВЕН СТИЛ */
 .logo { 
-  display: flex; 
-  align-items: center; 
-  gap: 10px; 
-  font-size: 2rem; 
-  font-weight: 900; 
-  color: var(--white);
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  transition: var(--transition);
-  text-shadow: 3px 3px 0px var(--primary-accent);
+  display: flex; align-items: center; gap: 10px; font-size: 2rem; font-weight: 900; 
+  color: var(--white); text-transform: uppercase; letter-spacing: 2px; 
+  transition: var(--transition); text-shadow: 3px 3px 0px var(--primary-accent);
 }
+.logo:hover { transform: scale(1.05) skewX(-5deg); text-shadow: 5px 5px 0px var(--neon-accent), var(--glow); }
+.logo-icon { font-size: 2.2rem; filter: drop-shadow(2px 2px 0 var(--primary-accent)); }
+.logo-accent { color: var(--neon-accent); text-shadow: 0 0 10px var(--neon-accent); }
 
-.logo:hover { 
-  transform: scale(1.05) skewX(-5deg);
-  text-shadow: 5px 5px 0px var(--neon-accent), var(--glow);
-}
-
-.logo-icon { 
-  font-size: 2.2rem;
-  filter: drop-shadow(2px 2px 0 var(--primary-accent));
-}
-
-.logo-accent { 
-  color: var(--neon-accent);
-  text-shadow: 0 0 10px var(--neon-accent);
-}
-
-/* НАВИГАЦИЯ С ОСТРИ ЪГЛИ */
-.main-nav { 
-  display: flex; 
-  gap: 10px; 
-}
-
+.main-nav { display: flex; gap: 10px; }
 .nav-btn { 
   background: linear-gradient(135deg, var(--medium-gray) 0%, var(--light-gray) 100%);
-  color: var(--white); 
-  border: 2px solid var(--primary-accent); 
-  padding: 12px 25px; 
-  border-radius: 0;
+  color: var(--white); border: 2px solid var(--primary-accent); padding: 12px 25px; border-radius: 0;
   clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
-  cursor: pointer; 
-  font-weight: 800; 
-  font-size: 1rem; 
-  display: flex; 
-  align-items: center; 
-  gap: 8px; 
-  transition: var(--transition); 
-  position: relative;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  cursor: pointer; font-weight: 800; font-size: 1rem; display: flex; align-items: center; gap: 8px; 
+  transition: var(--transition); position: relative; text-transform: uppercase; letter-spacing: 1px;
   box-shadow: 3px 3px 0 var(--primary-accent);
 }
-
 .nav-btn:hover, .nav-btn.active { 
   background: linear-gradient(135deg, var(--primary-accent) 0%, var(--neon-accent) 100%);
-  color: var(--black); 
-  border-color: var(--neon-accent);
-  transform: translate(-2px, -2px);
+  color: var(--black); border-color: var(--neon-accent); transform: translate(-2px, -2px);
   box-shadow: 5px 5px 0 var(--neon-accent), var(--glow);
 }
-
 .nav-arrow { font-size: 0.8rem; }
 
-/* КАТЕГОРИИ DROPDOWN */
 .category-dropdown { 
-  display: none; 
-  position: absolute; 
-  top: 100%; 
-  left: 0; 
-  right: 0; 
-  background: var(--black); 
-  padding: 25px 30px; 
-  box-shadow: 0 10px 50px rgba(255,85,0,0.5); 
-  border-top: 4px solid var(--primary-accent); 
-  z-index: 999; 
-  animation: slideDownAggressive 0.3s ease;
+  display: none; position: absolute; top: 100%; left: 0; right: 0; background: var(--black); 
+  padding: 25px 30px; box-shadow: 0 10px 50px rgba(255,85,0,0.5); border-top: 4px solid var(--primary-accent); 
+  z-index: 999; animation: slideDownAggressive 0.3s ease;
 }
-
 @keyframes slideDownAggressive { 
   from { opacity: 0; transform: translateY(-20px) skewY(-5deg); } 
   to { opacity: 1; transform: translateY(0) skewY(0); } 
 }
-
 .main-nav .nav-btn[data-page="motorbikes"]:hover + #motorbikes-dropdown,
 #motorbikes-dropdown:hover,
 .main-nav .nav-btn[data-page="equipment"]:hover + #equipment-dropdown,
-#equipment-dropdown:hover { 
-  display: block; 
-}
+#equipment-dropdown:hover { display: block; }
 
-.dropdown-grid { 
-  display: grid; 
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
-  gap: 15px; 
-  max-width: 1200px; 
-  margin: 0 auto; 
-}
-
+.dropdown-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 15px; max-width: 1200px; margin: 0 auto; }
 .dropdown-item { 
-  display: flex; 
-  align-items: center; 
-  gap: 15px; 
-  padding: 15px 20px; 
-  background: var(--medium-gray);
-  border: 2px solid transparent;
-  border-radius: 0;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
-  text-decoration: none; 
-  color: var(--white); 
-  transition: var(--transition);
-  font-weight: 700;
-  text-transform: uppercase;
+  display: flex; align-items: center; gap: 15px; padding: 15px 20px; background: var(--medium-gray);
+  border: 2px solid transparent; border-radius: 0; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%);
+  text-decoration: none; color: var(--white); transition: var(--transition); font-weight: 700; text-transform: uppercase;
 }
-
-.dropdown-item:hover { 
-  background: var(--primary-accent);
-  border-color: var(--neon-accent);
-  transform: translateX(10px) skewX(-5deg);
-  box-shadow: 5px 5px 0 var(--neon-accent);
-}
-
+.dropdown-item:hover { background: var(--primary-accent); border-color: var(--neon-accent); transform: translateX(10px) skewX(-5deg); box-shadow: 5px 5px 0 var(--neon-accent); }
 .dropdown-icon { font-size: 1.8rem; }
 .dropdown-item strong { display: block; color: var(--white); font-size: 1.1rem; }
 .dropdown-item small { color: #aaa; font-size: 0.85rem; }
 
-/* HEADER RIGHT */
 .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
-
 .search-box { display: flex; min-width: 280px; }
 .search-box input { 
   flex: 1; padding: 12px 18px; border: 3px solid var(--light-gray); border-right: none; 
   background: var(--medium-gray); color: var(--white); font-size: 1rem; outline: none; font-weight: 600; transition: var(--transition);
 }
 .search-box input:focus { border-color: var(--primary-accent); box-shadow: inset 0 0 10px rgba(255,85,0,0.3); }
-
 .search-box button { 
   padding: 12px 22px; background: var(--primary-accent); border: 3px solid var(--primary-accent); border-left: none;
   cursor: pointer; color: var(--white); font-size: 1.2rem; transition: var(--transition); font-weight: 800;
@@ -197,17 +106,14 @@ body {
   position: relative; text-transform: uppercase; font-size: 0.9rem; box-shadow: 3px 3px 0 var(--black);
 }
 .action-btn:hover { border-color: var(--primary-accent); background: var(--primary-accent); color: var(--black); transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--neon-accent); }
-
 .action-btn.primary { background: linear-gradient(135deg, var(--primary-accent) 0%, var(--neon-accent) 100%); border-color: var(--neon-accent); color: var(--black); box-shadow: 3px 3px 0 var(--black), var(--glow); }
 .action-btn.primary:hover { background: linear-gradient(135deg, var(--neon-accent) 0%, var(--primary-accent) 100%); transform: translate(-3px, -3px) scale(1.05); box-shadow: 6px 6px 0 var(--black), var(--glow); }
-
 .action-btn .count { 
   position: absolute; top: -8px; right: -8px; background: var(--neon-accent); color: var(--black); 
   font-size: 0.75rem; width: 22px; height: 22px; border-radius: 50%; display: flex; align-items: center; 
   justify-content: center; font-weight: 900; border: 2px solid var(--black);
 }
 
-/* HERO СЛАЙДШОУ */
 .hero-slideshow { 
   position: relative; max-width: 1400px; margin: 30px auto; border-radius: 0; overflow: hidden; 
   box-shadow: 0 10px 50px rgba(255,85,0,0.4); height: 450px; border: 4px solid var(--primary-accent);
@@ -224,10 +130,7 @@ body {
 }
 .slide:hover img { transform: skewX(-5deg) scale(1.05); }
 .slide-content { flex: 1; padding-left: 50px; }
-.slide-content h3 { 
-  font-size: 2.8rem; margin-bottom: 15px; color: var(--white); text-transform: uppercase; font-weight: 900;
-  text-shadow: 4px 4px 0 var(--primary-accent); letter-spacing: 2px;
-}
+.slide-content h3 { font-size: 2.8rem; margin-bottom: 15px; color: var(--white); text-transform: uppercase; font-weight: 900; text-shadow: 4px 4px 0 var(--primary-accent); letter-spacing: 2px; }
 .slide-content p { font-size: 1.3rem; opacity: 0.95; margin-bottom: 25px; font-weight: 600; }
 .slide-content .price { font-size: 3.5rem; font-weight: 900; color: var(--neon-accent); text-shadow: 3px 3px 0 var(--black); letter-spacing: 3px; }
 
@@ -244,7 +147,6 @@ body {
 .dot { width: 15px; height: 15px; border-radius: 0; background: var(--light-gray); cursor: pointer; transition: var(--transition); border: 3px solid var(--white); transform: skewX(-10deg); }
 .dot.active { background: var(--neon-accent); transform: skewX(-10deg) scale(1.4); border-color: var(--black); box-shadow: var(--glow); }
 
-/* КАТЕГОРИИ КАРТИ */
 .category-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; max-width: 1000px; margin: 50px auto; padding: 0 20px; }
 .category-card { 
   background: linear-gradient(135deg, var(--medium-gray) 0%, var(--light-gray) 100%); border-radius: 0; padding: 40px; 
@@ -252,13 +154,9 @@ body {
   position: relative; overflow: hidden; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 20px), calc(100% - 20px) 100%, 0 100%);
   box-shadow: 5px 5px 0 var(--black);
 }
-.category-card::before {
-  content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s;
-}
+.category-card::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: 0.5s; }
 .category-card:hover::before { left: 100%; }
 .category-card:hover { border-color: var(--neon-accent); transform: translateY(-8px) skewX(-3deg); box-shadow: 8px 8px 0 var(--neon-accent), var(--shadow-hover); }
-
 .category-card.motorbikes-card .card-icon { background: linear-gradient(135deg, var(--primary-accent) 0%, var(--neon-accent) 100%); color: var(--black); box-shadow: 0 5px 20px rgba(255,85,0,0.5); }
 .category-card.equipment-card .card-icon { background: linear-gradient(135deg, var(--neon-accent) 0%, var(--primary-accent) 100%); color: var(--black); box-shadow: 0 5px 20px rgba(255,170,0,0.5); }
 .card-icon { width: 90px; height: 90px; border-radius: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; margin: 0 auto 25px; border: 4px solid var(--black); transform: skewX(-10deg); box-shadow: 4px 4px 0 var(--black); }
@@ -267,7 +165,6 @@ body {
 .card-arrow { font-size: 2rem; color: var(--neon-accent); font-weight: 900; display: inline-block; transition: var(--transition); }
 .category-card:hover .card-arrow { transform: translateX(10px); text-shadow: var(--glow); }
 
-/* СЕКЦИИ */
 .page-section { display: none; padding: 40px 20px; min-height: 80vh; background: var(--black); }
 .page-section.active { display: block; }
 .section-header { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 50px auto 30px; padding: 0 20px; border-bottom: 4px solid var(--primary-accent); padding-bottom: 15px; }
@@ -281,7 +178,6 @@ body {
 .btn-add { background: linear-gradient(135deg, var(--primary-accent) 0%, var(--neon-accent) 100%); color: var(--black); border: none; padding: 15px 40px; border-radius: 0; font-weight: 900; font-size: 1.1rem; cursor: pointer; transition: var(--transition); text-transform: uppercase; letter-spacing: 2px; clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px); box-shadow: 4px 4px 0 var(--black), var(--glow); }
 .btn-add:hover { transform: translateY(-4px) scale(1.05); box-shadow: 6px 6px 0 var(--black), var(--shadow-hover); }
 
-/* ФИЛТРИ */
 .subcategory-filters { display: flex; justify-content: center; gap: 12px; flex-wrap: wrap; max-width: 1200px; margin: 0 auto 30px; padding: 0 20px; }
 .bike-type-filters { border-bottom: 4px solid var(--primary-accent); padding-bottom: 25px; margin-bottom: 30px; }
 .bike-type-filters .subfilter { background: var(--medium-gray); border: 3px solid var(--primary-accent); color: var(--white); clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px); }
@@ -292,7 +188,6 @@ body {
 .subfilter { padding: 12px 25px; border: 3px solid var(--light-gray); background: var(--medium-gray); color: var(--white); border-radius: 0; cursor: pointer; font-weight: 800; transition: var(--transition); text-transform: uppercase; font-size: 0.95rem; letter-spacing: 1px; box-shadow: 3px 3px 0 var(--black); }
 .subfilter:hover, .subfilter.active { transform: translate(-2px, -2px); box-shadow: 5px 5px 0 var(--neon-accent); }
 
-/* ПРОДУКТ ГРИД */
 .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 30px; max-width: 1400px; margin: 0 auto; padding: 0 20px; }
 .card { background: linear-gradient(135deg, var(--medium-gray) 0%, var(--light-gray) 100%); border-radius: 0; overflow: hidden; border: 4px solid var(--primary-accent); transition: var(--transition); cursor: pointer; position: relative; clip-path: polygon(0 0, 100% 0, 100% calc(100% - 15px), calc(100% - 15px) 100%, 0 100%); box-shadow: 5px 5px 0 var(--black); }
 .card:hover { border-color: var(--neon-accent); transform: translateY(-8px) skewX(-2deg); box-shadow: 8px 8px 0 var(--neon-accent), var(--shadow-hover); }
@@ -377,6 +272,23 @@ body {
 .tab-content { display: none; } .tab-content.active { display: block; }
 .warning-text { color: var(--neon-accent); font-weight: 800; margin-bottom: 20px; padding: 15px; background: rgba(255,85,0,0.1); border-radius: 0; border-left: 5px solid var(--primary-accent); }
 
+/* === CONTACT US FORM STYLES === */
+#contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 5px;
+}
+#contact-modal .modal-content {
+  max-width: 580px; /* Малко по-широк за по-добра подредба на формата */
+}
+#contact-form textarea {
+  min-height: 130px;
+  resize: vertical;
+}
+#contact-form .form-group { margin-bottom: 0; }
+#contact-form .submit-btn { margin-top: 10px; }
+
 @media (max-width: 900px) {
   .header-container { flex-direction: column; align-items: stretch; }
   .main-nav { justify-content: center; width: 100%; }
@@ -395,6 +307,7 @@ body {
   .category-header h1 { font-size: 2.2rem; }
   .slide-content h3 { font-size: 2rem; }
   .slide-content .price { font-size: 2.5rem; }
+  #contact-modal .modal-content { padding: 35px; }
 }
 
 @media (max-width: 600px) {

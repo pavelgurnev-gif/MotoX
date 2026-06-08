@@ -12,7 +12,7 @@
     <div class="header-container">
       <div class="logo" id="site-logo" style="cursor: pointer;">
         <span class="logo-icon"></span>
-        <span class="logo-text">Moto<span class="logo-accent">X</span> </span>
+        <span class="logo-text">Moto<span class="logo-accent">X</span> 
       </div>
       <nav class="main-nav">
         <button class="nav-btn" data-page="motorbikes"> Motorbikes <span class="nav-arrow">▼</span></button>
@@ -23,11 +23,7 @@
           <input type="text" id="search-input" placeholder="Search...">
           <button id="search-btn">🔍</button>
         </div>
-        <button id="btn-favorites" class="action-btn">
-          <span class="icon">❤️</span>
-          <span class="count" id="fav-count">0</span>
-        </button>
-        <button id="btn-profile" class="action-btn" onclick="openProfile()">👤 Profile</button>
+        <button id="btn-profile" class="action-btn" onclick="openProfile()">👤 Profile <span class="count" id="fav-count">0</span></button>
         <button id="btn-login" class="action-btn" onclick="openAuthModal()">🔑 Login</button>
         <button id="btn-add-product" class="action-btn primary" onclick="openAddForm()">+ Sell</button>
       </div>
@@ -101,12 +97,12 @@
     </section>
 
     <section id="detail-section" class="page-section">
-      <button class="back-btn" onclick="goBack()">← Back</button>
+      <button class="back-btn" onclick="handleBack()">← Back</button>
       <div id="product-detail" class="detail-container"></div>
     </section>
 
     <section id="add-section" class="page-section">
-      <button class="back-btn" onclick="showPage('home')">← Cancel</button>
+      <button class="back-btn" onclick="handleBack()">← Cancel</button>
       <h2>📦 List Your Item</h2>
       <form id="add-form" class="sell-form">
         <div class="form-row">
@@ -154,14 +150,8 @@
           </div>
         </div>
         <div class="form-row">
-          <div class="form-group">
-            <label>Phone for Contact *</label>
-            <input type="tel" id="add-phone" placeholder="+359 888 123456" required>
-          </div>
-          <div class="form-group">
-            <label>Email for Contact *</label>
-            <input type="email" id="add-email" placeholder="seller@example.com" required>
-          </div>
+          <div class="form-group"><label>Phone for Contact *</label><input type="tel" id="add-phone" placeholder="+359 888 123456" required></div>
+          <div class="form-group"><label>Email for Contact *</label><input type="email" id="add-email" placeholder="pavel.gyurnev@gmail.com" required></div>
         </div>
         <div class="form-group">
           <label>Product Photo</label>
@@ -177,15 +167,17 @@
     </section>
 
     <section id="profile-section" class="page-section">
-      <button class="back-btn" onclick="showPage('home')">← Back</button>
+      <button class="back-btn" onclick="handleBack()">← Back</button>
       <div class="profile-container">
         <h2>👤 <span id="profile-username">Guest</span>'s Profile</h2>
         <div class="profile-tabs">
           <button class="tab-btn active" data-tab="my-listings"> My Listings</button>
+          <button class="tab-btn" data-tab="my-favorites"> Favorites</button>
           <button class="tab-btn" data-tab="edit-profile"> Edit Profile</button>
           <button class="tab-btn" data-tab="delete-account"> Delete Account</button>
         </div>
         <div id="tab-my-listings" class="tab-content active"><div id="my-listings-grid" class="product-grid"></div></div>
+        <div id="tab-my-favorites" class="tab-content"><div id="my-favorites-grid" class="product-grid"></div></div>
         <div id="tab-edit-profile" class="tab-content">
           <form id="edit-profile-form" class="sell-form">
             <label>Change Password</label>
@@ -204,11 +196,18 @@
   <footer class="main-footer">
     <div class="footer-content">
       <div class="footer-section"><h3> MotoX </h3><p>Premium Bulgarian marketplace. Buy smart, ride hard.</p></div>
-      <div class="footer-section"><h4>Categories</h4><ul><li><a href="#" data-page="motorbikes">Motorbikes</a></li><li><a href="#" data-page="equipment">Equipment</a></li></ul></div>
+      <div class="footer-section">
+        <h4>Support</h4>
+        <ul>
+          <li><a href="#" onclick="openContactModal()"> Contact Us</a></li>
+          
+        </ul>
+      </div>
     </div>
-    <div class="footer-bottom"><p>© 2026 MotoX Parts - Ride Hard 🏁</p></div>
+    <div class="footer-bottom"><p>© 2026 MotoX - Ride Hard 🏁</p></div>
   </footer>
 
+ 
   <div id="auth-modal" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
@@ -219,6 +218,29 @@
         <button type="submit" class="modal-btn">Login</button>
       </form>
       <p id="toggle-auth">Don't have an account? <a href="#">Register here</a></p>
+    </div>
+  </div>
+
+  
+  <div id="contact-modal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal" onclick="closeContactModal()">&times;</span>
+      <h2> Contact Us</h2>
+      <form id="contact-form">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="contact-name" placeholder="Enter your full name" required>
+        </div>
+        <div class="form-group">
+          <label>Your Email *</label>
+          <input type="email" id="contact-email" placeholder="Enter your email address" required>
+        </div>
+        <div class="form-group">
+          <label>Describe Your Problem *</label>
+          <textarea id="contact-message" placeholder="Describe your issue or question..." required style="height: 150px;"></textarea>
+        </div>
+        <button type="submit" class="submit-btn"> Send Message</button>
+      </form>
     </div>
   </div>
 
